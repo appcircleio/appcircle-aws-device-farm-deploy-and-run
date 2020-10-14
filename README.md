@@ -1,1 +1,1 @@
-# appcircle-aws-device-farm-deploy-and-run
+# AWS Device Farm Deploy and Run
