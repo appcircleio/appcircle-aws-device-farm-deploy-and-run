@@ -43,13 +43,13 @@ end
 AWS_DOWNLOAD_URL_FOR_LINUX = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
 AWS_DOWNLOAD_URL_FOR_MACOS = "https://awscli.amazonaws.com/AWSCLIV2.pkg"
 
-# if OS.mac?
-# 	run_command("curl #{AWS_DOWNLOAD_URL_FOR_MACOS} -o \"AWSCLIV2.pkg\"")
-# 	run_command("sudo installer -pkg AWSCLIV2.pkg -target /")
-# else
-# 	run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
-# 	run_command("unzip awscliv2.zip && ./aws/install")
-# end
+if OS.mac?
+	run_command("curl #{AWS_DOWNLOAD_URL_FOR_MACOS} -o \"AWSCLIV2.pkg\"")
+	run_command("sudo installer -pkg AWSCLIV2.pkg -target /")
+else
+	run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
+	run_command("unzip awscliv2.zip && ./aws/install")
+end
 
 #List projects
 # run_command("aws devicefarm list-projects")
@@ -88,6 +88,22 @@ def check_upload(arn,check_count)
 	return check_upload(arn,check_count - 1)
 end
 
+def check_test(arn,check_count)
+	if check_count <= 0 
+		puts "Error: Schedule test timeout."
+		exit 1
+	end
+	output_get_run= run_command("aws devicefarm get-run --arn \"#{arn}\"")
+	output_get_run = JSON.parse(output_get_run)
+	status = output_get_run["run"]["status"]
+	if status == "COMPLETED"
+		return true
+	end 
+
+	sleep(10)
+	return check_test(arn,check_count - 10)
+end
+
 #Application File
 unless ac_aws_app_arn
 	#Upload Application File
@@ -96,7 +112,7 @@ else
 	upload_app_arn = ac_aws_app_arn
 end
 
-check_upload(upload_app_arn,10)
+check_upload(upload_app_arn,10) #10 second
 
 #Test File
 unless ac_aws_test_arn
@@ -106,15 +122,14 @@ else
 	upload_test_arn = ac_aws_test_arn
 end
 
-check_upload(upload_test_arn,10)
+check_upload(upload_test_arn,10) #10 second
 
 #Schedule Test
-run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
- 
+output_schedule_run = run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
+output_schedule_run = JSON.parse(output_schedule_run)
+schedule_run_arn = output_schedule_run["run"]["arn"]
 
-# #Write Environment Variable
-# open(ENV['AC_ENV_FILE_PATH'], 'a') { |f|
-#   f.puts "AC_AWS_UPLOAD_URL=#{aws3_upload_url}"
-# }
+check_test(schedule_run_arn,60*60) #1 hour
+
 
 exit 0
