@@ -12,9 +12,15 @@ ac_aws_secret_access_key = get_env_variable("AWS_SECRET_ACCESS_KEY") || abort('M
 ac_aws_default_region = get_env_variable("AWS_DEFAULT_REGION") || ENV["AWS_DEFAULT_REGION"] = "us-west-2"
 ac_aws_project_arn = get_env_variable("AWS_PROJECT_ARN") || abort('Missing aws project arn.')
 ac_aws_device_pool_arn = get_env_variable("AWS_DEVICE_POOL_ARN") || abort('Missing aws device pool arn.')
+
+#https://docs.aws.amazon.com/cli/latest/reference/devicefarm/schedule-run.html
 ac_aws_schedule_run_name = get_env_variable("AWS_SCHEDULE_RUN_NAME") || abort('Missing aws schedule run name.')
 ac_aws_schedule_test_type = get_env_variable("AWS_SCHEDULE_TEST_TYPE") || abort('Missing aws schedule test type.')
 
+ac_aws_upload_timeout = get_env_variable("AWS_UPLOAD_TIMEOUT").to_i || abort('Missing aws upload timeout.')
+ac_aws_test_timeout = get_env_variable("AWS_TEST_TIMEOUT").to_i || abort('Missing aws test timeout.')
+
+#https://docs.aws.amazon.com/cli/latest/reference/devicefarm/create-upload.html
 ac_aws_app_arn = get_env_variable("AWS_APP_ARN")
 unless ac_aws_app_arn
 	ac_aws_app_upload_file_name = get_env_variable("AWS_APP_UPLOAD_FILE_NAME") || abort('Missing aws app upload file name.')
@@ -22,6 +28,7 @@ unless ac_aws_app_arn
 	ac_aws_app_upload_file_path = get_env_variable("AWS_APP_UPLOAD_FILE_PATH") || abort('Missing aws app upload file path.')
 end
 
+#https://docs.aws.amazon.com/cli/latest/reference/devicefarm/create-upload.html
 ac_aws_test_arn = get_env_variable("AWS_TEST_ARN")
 unless ac_aws_test_arn
 	ac_aws_test_upload_file_name = get_env_variable("AWS_TEST_UPLOAD_FILE_NAME") || abort('Missing aws test upload file name.')
@@ -112,7 +119,7 @@ else
 	upload_app_arn = ac_aws_app_arn
 end
 
-check_upload(upload_app_arn,10) #10 second
+check_upload(upload_app_arn,ac_aws_upload_timeout)
 
 #Test File
 unless ac_aws_test_arn
@@ -122,14 +129,14 @@ else
 	upload_test_arn = ac_aws_test_arn
 end
 
-check_upload(upload_test_arn,10) #10 second
+check_upload(upload_test_arn,ac_aws_upload_timeout)
 
 #Schedule Test
 output_schedule_run = run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
 output_schedule_run = JSON.parse(output_schedule_run)
 schedule_run_arn = output_schedule_run["run"]["arn"]
 
-check_test(schedule_run_arn,60*60) #1 hour
+check_test(schedule_run_arn,ac_aws_test_timeout)
 
 
 exit 0
