@@ -4,7 +4,7 @@ Deploy a file to AWS Device Farm and run tests.
 
 Releated Documentation
 - https://docs.aws.amazon.com/cli/latest/reference/devicefarm/create-upload.html
-- https://docs.aws.amazon.com/cli/latest/reference/devicefarm/create-upload.html
+- https://docs.aws.amazon.com/cli/latest/reference/devicefarm/schedule-run.html
 
 Required Input Variables
 - `$AWS_ACCESS_KEY_ID`: Amazon S3 access key id
