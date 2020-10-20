@@ -60,11 +60,11 @@ inputs:
 - key: "AWS_TEST_ARN"
   isRequired: false
   title: AWS Device Farm Test ARN
-  description:  The ARN of the uploaded test to be run. If you don't set this parameter, the subsequent AWS Test Upload File Name, AWS Test Upload Type and AWS App Upload File Path parameters are required.
+  description:  The ARN of the uploaded test to be run. If you don't set this parameter, the subsequent Test Upload File Name, Test Upload Type and Test Upload File Path parameters are required.
 - key: "AWS_TEST_UPLOAD_FILE_NAME"
   isRequired: false
   title: AWS Device Farm Test Upload File Name
-  description:  The tes file to be uploaded. The file must have a .zip extension.
+  description:  The test file to be uploaded. The file must have a .zip extension.
 - key: "AWS_TEST_UPLOAD_TYPE"
   isRequired: false
   title: AWS Device Farm Test Upload Type
