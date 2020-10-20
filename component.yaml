@@ -25,10 +25,10 @@ inputs:
   isRequired: true
   title: AWS Device Pool Arn
   description:  The ARN of the device pool for the run.
-- key: "AWS_SCHEDULE_RUN_NAME"
+- key: "AWS_SCHEDULE_RUN_NAME_PREFIX"
   isRequired: true
-  title: AWS Schedule Run Name
-  description:  The name for the run to be scheduled.
+  title: AWS Schedule Run Name Prefix
+  description:  The name prefix for the run to be scheduled.
 - key: "AWS_SCHEDULE_TEST_TYPE"
   isRequired: true
   title: AWS Schedule Test Type

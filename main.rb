@@ -15,7 +15,7 @@ ac_aws_device_pool_arn = get_env_variable("AWS_DEVICE_POOL_ARN") || abort('Missi
 ac_build_number = get_env_variable("AC_BUILD_NUMDER") 
 
 #https://docs.aws.amazon.com/cli/latest/reference/devicefarm/schedule-run.html
-ac_aws_schedule_run_name = get_env_variable("AWS_SCHEDULE_RUN_NAME") || abort('Missing aws schedule run name.')
+ac_aws_schedule_run_name_prefix = get_env_variable("AWS_SCHEDULE_RUN_NAME_PREFIX") || abort('Missing aws schedule run name prefix.')
 ac_aws_schedule_test_type = get_env_variable("AWS_SCHEDULE_TEST_TYPE") || abort('Missing aws schedule test type.')
 
 ac_aws_upload_timeout = get_env_variable("AWS_UPLOAD_TIMEOUT").to_i || abort('Missing aws upload timeout.')
@@ -37,7 +37,7 @@ unless ac_aws_test_arn
 	ac_aws_test_upload_file_path = get_env_variable("AWS_TEST_UPLOAD_FILE_PATH") || abort('Missing aws test upload file path.')
 end
 
-def run_command(command)
+def run_command(command, isLogging=true)
     puts "@@[command] #{command}"
     output = `#{command}`
     puts "#{output}"
@@ -123,7 +123,7 @@ end
 
 check_upload(upload_test_arn,ac_aws_upload_timeout)
 
-ac_aws_schedule_run_name="#{ac_aws_schedule_run_name}_#{ac_build_number}"
+ac_aws_schedule_run_name="#{ac_aws_schedule_run_name_prefix}_#{ac_build_number}"
 #Schedule Test
 output_schedule_run = run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
 output_schedule_run = JSON.parse(output_schedule_run)
