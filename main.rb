@@ -37,7 +37,7 @@ unless ac_aws_test_arn
 	ac_aws_test_upload_file_path = get_env_variable("AWS_TEST_UPLOAD_FILE_PATH") || abort('Missing aws test upload file path.')
 end
 
-def run_command(command, isLogging=true)
+def run_command(command)
     puts "@@[command] #{command}"
     output = `#{command}`
     puts "#{output}"
