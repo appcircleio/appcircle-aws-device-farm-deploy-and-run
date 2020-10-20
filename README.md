@@ -11,7 +11,7 @@ Required Input Variables
 - `$AWS_SECRET_ACCESS_KEY`: AAmazon S3 secret access key (Visit [AWS access keys documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for details)
 - `$AWS_PROJECT_ARN`: The ARN of the project for deploy and run
 - `$AWS_DEVICE_POOL_ARN`: The ARN of the device pool for the run
-- `$AWS_SCHEDULE_RUN_NAME`: The name for the run to be scheduled
+- `$AWS_SCHEDULE_RUN_NAME`: The name prefix for the run to be scheduled
 - `$AWS_SCHEDULE_TEST_TYPE`: The test's type
 - `$AWS_UPLOAD_TIMEOUT`: Upload timeout. (second)
 - `$AWS_TEST_TIMEOUT`: Test timeout. (second)

@@ -12,6 +12,7 @@ ac_aws_secret_access_key = get_env_variable("AWS_SECRET_ACCESS_KEY") || abort('M
 ac_aws_default_region = get_env_variable("AWS_DEFAULT_REGION") || ENV["AWS_DEFAULT_REGION"] = "us-west-2"
 ac_aws_project_arn = get_env_variable("AWS_PROJECT_ARN") || abort('Missing aws project arn.')
 ac_aws_device_pool_arn = get_env_variable("AWS_DEVICE_POOL_ARN") || abort('Missing aws device pool arn.')
+ac_build_number = get_env_variable("AC_BUILD_NUMDER") 
 
 #https://docs.aws.amazon.com/cli/latest/reference/devicefarm/schedule-run.html
 ac_aws_schedule_run_name = get_env_variable("AWS_SCHEDULE_RUN_NAME") || abort('Missing aws schedule run name.')
@@ -57,15 +58,6 @@ else
 	run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
 	run_command("unzip awscliv2.zip && ./aws/install")
 end
-
-#List projects
-# run_command("aws devicefarm list-projects")
-
-#List device pools
-# run_command("aws devicefarm list-device-pools --arn #{ac_aws_project_arn}")
-
-#List uploads
-# run_command("aws devicefarm list-uploads --arn #{ac_aws_project_arn}")
 
 def create_upload(project_arn,upload_file_name,upload_type,file_path)
 	output_create_upload = run_command("aws devicefarm create-upload --project-arn \"#{project_arn}\" --name \"#{upload_file_name}\" --type #{upload_type}")
@@ -131,6 +123,7 @@ end
 
 check_upload(upload_test_arn,ac_aws_upload_timeout)
 
+ac_aws_schedule_run_name="#{ac_aws_schedule_run_name}_#{ac_build_number}"
 #Schedule Test
 output_schedule_run = run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
 output_schedule_run = JSON.parse(output_schedule_run)
