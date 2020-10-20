@@ -77,8 +77,8 @@ def create_upload(project_arn,upload_file_name,upload_type,file_path)
 end
 
 def check_upload(arn,check_count)
-	if check_count == 0 
-		puts "Error: App upload timeout."
+	if check_count <= 0 
+		puts "Error: App upload timed out."
 		exit 1
 	end
 	output_get_upload = run_command("aws devicefarm get-upload --arn \"#{arn}\"")
@@ -97,8 +97,8 @@ end
 
 def check_test(arn,check_count)
 	if check_count <= 0 
-		puts "Error: Schedule test timeout."
-		exit 1
+		puts "Warning: Maximum waiting time for test results exceeded."
+		exit 0
 	end
 	output_get_run= run_command("aws devicefarm get-run --arn \"#{arn}\"")
 	output_get_run = JSON.parse(output_get_run)
