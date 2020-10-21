@@ -12,7 +12,7 @@ ac_aws_secret_access_key = get_env_variable("AWS_SECRET_ACCESS_KEY") || abort('M
 ac_aws_default_region = get_env_variable("AWS_DEFAULT_REGION") || ENV["AWS_DEFAULT_REGION"] = "us-west-2"
 ac_aws_project_arn = get_env_variable("AWS_PROJECT_ARN") || abort('Missing aws project arn.')
 ac_aws_device_pool_arn = get_env_variable("AWS_DEVICE_POOL_ARN") || abort('Missing aws device pool arn.')
-ac_build_number = get_env_variable("AC_BUILD_NUMDER") 
+ac_build_number = get_env_variable("AC_BUILD_NUMBER") 
 
 #https://docs.aws.amazon.com/cli/latest/reference/devicefarm/schedule-run.html
 ac_aws_schedule_run_name_prefix = get_env_variable("AWS_SCHEDULE_RUN_NAME_PREFIX") || abort('Missing aws schedule run name prefix.')
