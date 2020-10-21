@@ -8,7 +8,7 @@ Releated Documentation
 
 Required Input Variables
 - `$AWS_ACCESS_KEY_ID`: Amazon S3 access key id
-- `$AWS_SECRET_ACCESS_KEY`: AAmazon S3 secret access key (Visit [AWS access keys documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for details)
+- `$AWS_SECRET_ACCESS_KEY`: Amazon S3 secret access key (Visit [AWS access keys documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for details)
 - `$AWS_PROJECT_ARN`: The ARN of the project for deploy and run
 - `$AWS_DEVICE_POOL_ARN`: The ARN of the device pool for the run
 - `$AWS_SCHEDULE_RUN_NAME_PREFIX`: The name prefix for the run to be scheduled
@@ -20,6 +20,6 @@ Required Input Variables
 - `$AWS_APP_UPLOAD_TYPE`: The upload type of the file.
 - `$AWS_APP_UPLOAD_FILE_PATH`: The file path for the app upload.
 - `$AWS_TEST_ARN`: The ARN of the uploaded test to be run. If you don't set this parameter, the subsequent AWS Test Upload File Name, AWS Test Upload Type and AWS App Upload File Path parameters are required.
-- `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded. The file must have a .zip extension.
+- `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded.
 - `$AWS_TEST_UPLOAD_TYPE`: The upload type of the test.
 - `$AWS_TEST_UPLOAD_FILE_PATH`: The file path for the test upload.
