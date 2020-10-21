@@ -12,17 +12,14 @@ Required Input Variables
 - `$AWS_PROJECT_ARN`: The ARN of the project for deploy and run
 - `$AWS_DEVICE_POOL_ARN`: The ARN of the device pool for the run
 - `$AWS_SCHEDULE_RUN_NAME_PREFIX`: The name prefix for the run to be scheduled
-- `$AWS_SCHEDULE_TEST_TYPE`: The test's type
-- `$AWS_UPLOAD_TIMEOUT`: Upload timeout. (second)
-- `$AWS_TEST_TIMEOUT`: Test timeout. (second)
-- `$AWS_APP_ARN`: The ARN of an application package to run tests against, created with CreateUpload. If you don't have this parameter, AWS App Upload File Name, AWS App Upload Type, AWS App Upload File Path parameters required.
-- `$AWS_APP_UPLOAD_FILE_NAME`: The upload's file name. The name should not contain any forward slashes (/ ). If you are uploading an iOS app, the file name must end with the .ipa extension. If you are uploading an Android app, the file name must end with the .apk extension.
-- `$AWS_APP_UPLOAD_TYPE`: The upload's upload type.
-- `$AWS_APP_UPLOAD_FILE_PATH`: The upload's file path.
-- `$AWS_TEST_ARN`: The ARN of the uploaded test to be run. If you don't have this parameter, AWS Test Upload File Name, AWS Test Upload Type, AWS App Upload File Path parameters required.
-- `$AWS_TEST_UPLOAD_FILE_NAME`: The file name must end with the .zip file extension.
-- `$AWS_TEST_UPLOAD_FILE_NAME`: The upload's upload type.
-- `$AWS_TEST_UPLOAD_FILE_PATH`: The upload's file path.
-
-Optional Input Variables
-- `$AWS_TEST_UPLOAD_TYPE`: Amazon S3 bucket region. Defaults to `us-west-2`
+- `$AWS_SCHEDULE_TEST_TYPE`: The type of the test for the run.
+- `$AWS_UPLOAD_TIMEOUT`: Time out duration (seconds) for the test file upload. The step is skipped if the time out is reached.
+- `$AWS_TEST_TIMEOUT`: Time out duration (seconds) for the AWS Device Farm run. The step is skipped if this duration is reached, but the test execution continues in AWS Device Farm.
+- `$AWS_APP_ARN`: The ARN of the application package to run tests against, created with CreateUpload. If you don't set this parameter, the subsequent App Upload File Name, App Upload Type and App Upload File Path parameters are required.
+- `$AWS_APP_UPLOAD_FILE_NAME`: The file to be uploaded. The name should not contain any forward slashes (/ ). If you are uploading an iOS app, the file must have an .ipa extension. If you are uploading an Android app, the file must have an .apk extension
+- `$AWS_APP_UPLOAD_TYPE`: The upload type of the file.
+- `$AWS_APP_UPLOAD_FILE_PATH`: The file path for the app upload.
+- `$AWS_TEST_ARN`: The ARN of the uploaded test to be run. If you don't set this parameter, the subsequent AWS Test Upload File Name, AWS Test Upload Type and AWS App Upload File Path parameters are required.
+- `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded. The file must have a .zip extension.
+- `$AWS_TEST_UPLOAD_TYPE`: The upload type of the test.
+- `$AWS_TEST_UPLOAD_FILE_PATH`: The file path for the test upload.
