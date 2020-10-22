@@ -37,6 +37,14 @@ unless ac_aws_test_arn
 	ac_aws_test_upload_file_path = get_env_variable("AWS_TEST_UPLOAD_FILE_PATH") || abort('Missing aws test upload file path.')
 end
 
+#https://docs.aws.amazon.com/cli/latest/reference/devicefarm/create-upload.html
+ac_aws_test_spec_arn = get_env_variable("AWS_TEST_SPEC_ARN")
+unless ac_aws_test_arn
+	ac_aws_test_spec_upload_file_name = get_env_variable("AWS_TEST_SPEC_UPLOAD_FILE_NAME")
+	ac_aws_test_spec_upload_type = get_env_variable("AWS_TEST_SPEC_UPLOAD_TYPE")
+	ac_aws_test_spec_upload_file_path = get_env_variable("AWS_TEST_SPEC_UPLOAD_FILE_PATH")
+end
+
 def run_command(command)
     puts "@@[command] #{command}"
     output = `#{command}`
@@ -123,9 +131,38 @@ end
 
 check_upload(upload_test_arn,ac_aws_upload_timeout)
 
+#Test Spec File
+unless ac_aws_test_spec_arn
+	#Upload Test Spec File
+	if ac_aws_test_spec_upload_file_name && ac_aws_test_spec_upload_type && ac_aws_test_spec_upload_file_path
+		upload_test_spec_arn = create_upload(ac_aws_project_arn,ac_aws_test_spec_upload_file_name,ac_aws_test_spec_upload_type,ac_aws_test_spec_upload_file_path)
+	end
+else
+	upload_test_spec_arn = ac_aws_test_spec_arn
+end
+
+check_upload(upload_test_spec_arn,ac_aws_upload_timeout)
+
 ac_aws_schedule_run_name="#{ac_aws_schedule_run_name_prefix}_#{ac_build_number}"
 #Schedule Test
-output_schedule_run = run_command("aws devicefarm schedule-run --project-arn \"#{ac_aws_project_arn}\" --app-arn \"#{upload_app_arn}\" --device-pool-arn \"#{ac_aws_device_pool_arn}\" --name \"#{ac_aws_schedule_run_name}\" --test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
+schedule_run_command = "aws devicefarm schedule-run"
+schedule_run_command.concat(" ")
+schedule_run_command.concat("--project-arn \"#{ac_aws_project_arn}\"")
+schedule_run_command.concat(" ")
+schedule_run_command.concat("--app-arn \"#{upload_app_arn}\"")
+schedule_run_command.concat(" ")
+schedule_run_command.concat("--device-pool-arn \"#{ac_aws_device_pool_arn}\"")
+schedule_run_command.concat(" ")
+schedule_run_command.concat("--name \"#{ac_aws_schedule_run_name}\"")
+schedule_run_command.concat(" ")
+if upload_test_spec_arn
+	schedule_run_command.concat("--test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn},testSpecArn=#{upload_test_spec_arn}")
+else
+	schedule_run_command.concat("--test type=#{ac_aws_schedule_test_type},testPackageArn=#{upload_test_arn}")
+end
+
+
+output_schedule_run = run_command(schedule_run_command)
 output_schedule_run = JSON.parse(output_schedule_run)
 schedule_run_arn = output_schedule_run["run"]["arn"]
 
