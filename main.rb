@@ -141,7 +141,9 @@ else
 	upload_test_spec_arn = ac_aws_test_spec_arn
 end
 
-check_upload(upload_test_spec_arn,ac_aws_upload_timeout)
+if upload_test_spec_arn
+	check_upload(upload_test_spec_arn,ac_aws_upload_timeout)
+end
 
 ac_aws_schedule_run_name="#{ac_aws_schedule_run_name_prefix}_#{ac_build_number}"
 #Schedule Test
