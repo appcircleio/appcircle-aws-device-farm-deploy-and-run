@@ -20,6 +20,6 @@ Required Input Variables
 - `$AWS_APP_UPLOAD_TYPE`: The upload type of the file.
 - `$AWS_APP_UPLOAD_FILE_PATH`: The file path for the app upload.
 - `$AWS_TEST_ARN`: The ARN of the uploaded test to be run. If you don't set this parameter, the subsequent AWS Test Upload File Name, AWS Test Upload Type and AWS App Upload File Path parameters are required.
-- `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded. The file must have a .zip extension.
+- `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded.
 - `$AWS_TEST_UPLOAD_TYPE`: The upload type of the test.
 - `$AWS_TEST_UPLOAD_FILE_PATH`: The file path for the test upload.
