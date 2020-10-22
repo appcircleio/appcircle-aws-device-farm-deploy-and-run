@@ -45,6 +45,9 @@ unless ac_aws_test_arn
 	ac_aws_test_spec_upload_file_path = get_env_variable("AWS_TEST_SPEC_UPLOAD_FILE_PATH")
 end
 
+AWS_DOWNLOAD_URL_FOR_LINUX = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+AWS_DOWNLOAD_URL_FOR_MACOS = "https://awscli.amazonaws.com/AWSCLIV2.pkg"
+
 def run_command(command)
     puts "@@[command] #{command}"
     output = `#{command}`
@@ -56,15 +59,19 @@ def run_command(command)
     return output
 end
 
-AWS_DOWNLOAD_URL_FOR_LINUX = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-AWS_DOWNLOAD_URL_FOR_MACOS = "https://awscli.amazonaws.com/AWSCLIV2.pkg"
+def install_aws_cli
+	system("aws --version")
+	if $?.success?
+		return
+	end
 
-if OS.mac?
-	run_command("curl #{AWS_DOWNLOAD_URL_FOR_MACOS} -o \"AWSCLIV2.pkg\"")
-	run_command("sudo installer -pkg AWSCLIV2.pkg -target /")
-else
-	run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
-	run_command("unzip awscliv2.zip && ./aws/install")
+	if OS.mac?
+		run_command("curl #{AWS_DOWNLOAD_URL_FOR_MACOS} -o \"AWSCLIV2.pkg\"")
+		run_command("sudo installer -pkg AWSCLIV2.pkg -target /")
+	else
+		run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
+		run_command("unzip awscliv2.zip && ./aws/install")
+	end
 end
 
 def create_upload(project_arn,upload_file_name,upload_type,file_path)
@@ -110,6 +117,8 @@ def check_test(arn,check_count)
 	sleep(10)
 	return check_test(arn,check_count - 10)
 end
+
+install_aws_cli()
 
 #Application File
 unless ac_aws_app_arn
