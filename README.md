@@ -23,3 +23,6 @@ Required Input Variables
 - `$AWS_TEST_UPLOAD_FILE_NAME`: The test file to be uploaded.
 - `$AWS_TEST_UPLOAD_TYPE`: The upload type of the test.
 - `$AWS_TEST_UPLOAD_FILE_PATH`: The file path for the test upload.
+- `$AWS_TEST_SPEC_UPLOAD_FILE_NAME`: The test spec file to be uploaded.
+- `$AWS_TEST_SPEC_UPLOAD_TYPE`: The upload type of the test spec.
+- `$AWS_TEST_SPEC_UPLOAD_FILE_PATH`: The file path for the test spec upload.
