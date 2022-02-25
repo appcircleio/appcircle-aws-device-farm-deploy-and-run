@@ -48,6 +48,10 @@ end
 AWS_DOWNLOAD_URL_FOR_LINUX = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
 AWS_DOWNLOAD_URL_FOR_MACOS = "https://awscli.amazonaws.com/AWSCLIV2.pkg"
 
+$farm_result = ''
+$appupload_arn = ''
+$devicepool_arn = ''
+
 def run_command(command)
     puts "@@[command] #{command}"
     output = `#{command}`
@@ -111,6 +115,9 @@ def check_test(arn,check_count)
 	output_get_run = JSON.parse(output_get_run)
 	status = output_get_run["run"]["status"]
 	if status == "COMPLETED"
+		$farm_result = output_get_run["run"]["result"]
+		$devicepool_arn = output_get_run["run"]["devicePoolArn"]
+		$appupload_arn = output_get_run["run"]["appUpload"]
 		return true
 	end 
 
@@ -179,5 +186,16 @@ schedule_run_arn = output_schedule_run["run"]["arn"]
 
 check_test(schedule_run_arn,ac_aws_test_timeout)
 
+#Write Environment Variable
+open(ENV['AC_ENV_FILE_PATH'], 'a') { |f|
+    f.puts "AWS_RUN_ARN=#{schedule_run_arn}"
+	f.puts "AWS_TEST_RESULT=#{$farm_result}"
+	f.puts "AWS_OUTPUT_DEVICEPOOL_ARN=#{$devicepool_arn}"
+	f.puts "AWS_OUTPUT_APPUPLOAD_ARN=#{$appupload_arn}"
+}
 
-exit 0
+if $farm_result == "FAILED"
+	exit 1
+else
+	exit 0
+end

@@ -89,6 +89,19 @@ inputs:
   isRequired: false
   title: AWS Test Spec Upload File Path
   description: The file path for the test spec upload.
+outputs:
+- key: "AWS_RUN_ARN"
+  title: The run's ARN.
+  description: AWS Device Farm Run ARN.
+- key: "AWS_TEST_RESULT"
+  title: The run's test result.
+  description: AWS Device Farm Test result.
+- key: "AWS_OUTPUT_DEVICEPOOL_ARN"
+  title: The run's Device Pool ARN result.
+  description: The ARN of the Device pool.
+- key: "AWS_OUTPUT_APPUPLOAD_ARN"
+  title: The run's App Upload ARN result.
+  description: The ARN of the App Upload.
 processFilename: ruby
 processArguments: '%AC_STEP_TEMP%/main.rb'
 files:

@@ -26,3 +26,9 @@ Required Input Variables
 - `$AWS_TEST_SPEC_UPLOAD_FILE_NAME`: The test spec file to be uploaded.
 - `$AWS_TEST_SPEC_UPLOAD_TYPE`: The upload type of the test spec.
 - `$AWS_TEST_SPEC_UPLOAD_FILE_PATH`: The file path for the test spec upload.
+
+Output Variables
+- `$AWS_RUN_ARN`: The run's ARN.
+- `$AWS_TEST_RESULT`: The run's test result. If this variable returns `FAILED`, your workflow will fail. If you want to ignore this error, you need to enable `Continue with the next step even if this step fails` toggle.
+- `$AWS_OUTPUT_DEVICEPOOL_ARN`: The run's Device Pool ARN result.
+- `$AWS_OUTPUT_APPUPLOAD_ARN`: The run's App Upload ARN result.
