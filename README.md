@@ -26,6 +26,7 @@ Required Input Variables
 - `$AWS_TEST_SPEC_UPLOAD_FILE_NAME`: The test spec file to be uploaded.
 - `$AWS_TEST_SPEC_UPLOAD_TYPE`: The upload type of the test spec.
 - `$AWS_TEST_SPEC_UPLOAD_FILE_PATH`: The file path for the test spec upload.
+- `$AC_AWS_CLI_BASE_URL`: Base URL to download AWS CLI v2 from when `aws` is not installed. Defaults to `https://awscli.amazonaws.com`. Point it to a raw proxy of that host in your artifact proxy if the runner cannot reach it. If `aws` is already on `PATH`, the download is skipped. On macOS the downloaded package is installed only if it is signed by the AWS CLI publisher (Developer ID Installer, team ID `94KV3E626L`).
 
 Output Variables
 - `$AWS_RUN_ARN`: The run's ARN.

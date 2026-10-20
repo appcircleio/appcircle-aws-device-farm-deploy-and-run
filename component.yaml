@@ -89,6 +89,11 @@ inputs:
   isRequired: false
   title: AWS Test Spec Upload File Path
   description: The file path for the test spec upload.
+- key: "AC_AWS_CLI_BASE_URL"
+  defaultValue: "https://awscli.amazonaws.com"
+  isRequired: false
+  title: AWS CLI Download Base URL
+  description: "Base URL to download AWS CLI v2 from when it is not installed. Point it to your artifact proxy, for example https://nexus.example.com/repository/awscli."
 outputs:
 - key: "AWS_RUN_ARN"
   title: The run's ARN.
