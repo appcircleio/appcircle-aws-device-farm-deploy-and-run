@@ -2,6 +2,7 @@ require 'open3'
 require 'os'
 require 'json'
 require 'timeout'
+require 'shellwords'
 
 def get_env_variable(key)
 	return (ENV[key] == nil || ENV[key] == "") ? nil : ENV[key]
@@ -45,8 +46,13 @@ unless ac_aws_test_arn
 	ac_aws_test_spec_upload_file_path = get_env_variable("AWS_TEST_SPEC_UPLOAD_FILE_PATH")
 end
 
-AWS_DOWNLOAD_URL_FOR_LINUX = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-AWS_DOWNLOAD_URL_FOR_MACOS = "https://awscli.amazonaws.com/AWSCLIV2.pkg"
+ac_aws_cli_base_url = (get_env_variable("AC_AWS_CLI_BASE_URL") || "https://awscli.amazonaws.com").chomp("/")
+abort('AC_AWS_CLI_BASE_URL must start with http:// or https://') unless ac_aws_cli_base_url.match?(%r{\Ahttps?://})
+
+AWS_CLI_FILE_FOR_LINUX = "awscli-exe-linux-x86_64.zip"
+AWS_CLI_FILE_FOR_MACOS = "AWSCLIV2.pkg"
+# Team ID of the Developer ID Installer certificate that signs the AWS CLI macOS package
+AWS_CLI_SIGNING_TEAM_ID = "94KV3E626L"
 
 $farm_result = ''
 $appupload_arn = ''
@@ -63,17 +69,28 @@ def run_command(command)
     return output
 end
 
-def install_aws_cli
+# The base URL may point to an artifact proxy, so the package is installed only if AWS signed it.
+def verify_pkg_signature(pkg_path)
+	output, status = Open3.capture2e("pkgutil", "--check-signature", pkg_path)
+	unless status.success? && output.match?(/^\s*1\. Developer ID Installer: .*\(#{AWS_CLI_SIGNING_TEAM_ID}\)$/)
+		puts output
+		abort("#{pkg_path} is not signed by the AWS CLI publisher (team ID #{AWS_CLI_SIGNING_TEAM_ID}).")
+	end
+	puts "Package signature verified (team ID #{AWS_CLI_SIGNING_TEAM_ID})"
+end
+
+def install_aws_cli(base_url)
 	system("aws --version")
 	if $?.success?
 		return
 	end
 
 	if OS.mac?
-		run_command("curl #{AWS_DOWNLOAD_URL_FOR_MACOS} -o \"AWSCLIV2.pkg\"")
+		run_command("curl -fsSL --retry 3 #{Shellwords.escape("#{base_url}/#{AWS_CLI_FILE_FOR_MACOS}")} -o \"AWSCLIV2.pkg\"")
+		verify_pkg_signature("AWSCLIV2.pkg")
 		run_command("sudo installer -pkg AWSCLIV2.pkg -target /")
 	else
-		run_command("curl #{AWS_DOWNLOAD_URL_FOR_LINUX} -o \"awscliv2.zip\"")
+		run_command("curl -fsSL --retry 3 #{Shellwords.escape("#{base_url}/#{AWS_CLI_FILE_FOR_LINUX}")} -o \"awscliv2.zip\"")
 		run_command("unzip awscliv2.zip && ./aws/install")
 	end
 end
@@ -125,7 +142,7 @@ def check_test(arn,check_count)
 	return check_test(arn,check_count - 10)
 end
 
-install_aws_cli()
+install_aws_cli(ac_aws_cli_base_url)
 
 #Application File
 unless ac_aws_app_arn
